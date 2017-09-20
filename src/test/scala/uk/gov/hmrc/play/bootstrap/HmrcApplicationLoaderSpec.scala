@@ -55,10 +55,10 @@ class HmrcApplicationLoaderSpec extends Base64ConfigDecoderTests with RunModeCon
 
           val context = {
             val ctx = ApplicationLoader.createContext(Environment.simple())
-            ctx.copy(initialConfiguration = ctx.initialConfiguration ++ Configuration("run.mode" -> "Prod"))
+            ctx.copy(initialConfiguration = ctx.initialConfiguration ++ Configuration("run.mode" -> mode.toString))
           }
 
-          loader.builder(context).environment.mode mustEqual Mode.Prod
+          loader.builder(context).environment.mode mustEqual mode
         }
     }
   }
