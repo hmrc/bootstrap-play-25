@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.play.bootstrap
 
-import play.api.{ApplicationLoader, Configuration, Environment}
+import play.api.{ApplicationLoader, Configuration, Environment, Mode}
 import uk.gov.hmrc.play.bootstrap.config.{Base64ConfigDecoderTests, RunModeConfigLoaderTests}
 
 class HmrcApplicationLoaderSpec extends Base64ConfigDecoderTests with RunModeConfigLoaderTests {
@@ -44,7 +44,22 @@ class HmrcApplicationLoaderSpec extends Base64ConfigDecoderTests with RunModeCon
   }
 
   ".load" must {
+
     behave like aBase64Decoder
     behave like aRunModeConfigLoader
+
+    Mode.values.foreach {
+      mode =>
+
+        s"use the `run.mode` ($mode) from configuration instead of the default run mode" in {
+
+          val context = {
+            val ctx = ApplicationLoader.createContext(Environment.simple())
+            ctx.copy(initialConfiguration = ctx.initialConfiguration ++ Configuration("run.mode" -> "Prod"))
+          }
+
+          loader.builder(context).environment.mode mustEqual Mode.Prod
+        }
+    }
   }
 }

@@ -17,6 +17,7 @@
 package uk.gov.hmrc.play.bootstrap
 
 import play.api.ApplicationLoader.Context
+import play.api.Mode
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceApplicationLoader}
 import uk.gov.hmrc.play.bootstrap.config.{Base64ConfigDecoder, RunModeConfigLoader}
 
@@ -24,12 +25,24 @@ class HmrcApplicationLoader extends GuiceApplicationLoader with Base64ConfigDeco
 
   override def builder(context: Context): GuiceApplicationBuilder = {
 
+    val runMode: Mode.Mode =
+      context.initialConfiguration.getString("run.mode")
+        .map(Mode.withName)
+        .getOrElse(context.environment.mode)
+
     val config = decodeConfig(resolveConfig(
       context.initialConfiguration,
-      context.environment.mode
+      runMode
     ))
 
-    initialBuilder
-      .loadConfig(config)
+    GuiceApplicationBuilder(
+      environment   = context.environment.copy(mode = runMode),
+      configuration = config,
+      modules       = initialBuilder.modules,
+      overrides     = initialBuilder.overrides,
+      disabled      = initialBuilder.disabled,
+      binderOptions = initialBuilder.binderOptions,
+      eagerly       = initialBuilder.eagerly
+    )
   }
 }
