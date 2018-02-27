@@ -52,13 +52,13 @@ class ControllerConfigSpec extends WordSpec with MustMatchers {
   "ControllerConfigs.fromConfig" must {
 
     val controllerConfigs = ControllerConfigs.fromConfig(Configuration(
-      "controllers.foo.needsAuditing" -> false,
-      "controllers.foo.needsLogging" -> false
+      "controllers.a.b.c.foo.needsAuditing" -> false,
+      "controllers.a.b.c.foo.needsLogging" -> false
     ))
 
     "return loaded configuration" in {
 
-      val config = controllerConfigs.get("foo")
+      val config = controllerConfigs.get("a.b.c.foo")
 
       config.auditing mustBe false
       config.logging mustBe false
