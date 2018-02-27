@@ -19,6 +19,8 @@ package uk.gov.hmrc.play.bootstrap.config
 import com.typesafe.config.ConfigObject
 import play.api.Configuration
 
+import scala.util.Try
+
 case class ControllerConfig(logging: Boolean = true, auditing: Boolean = true)
 
 object ControllerConfig {
@@ -41,15 +43,43 @@ object ControllerConfigs {
   def fromConfig(configuration: Configuration): ControllerConfigs = {
 
     val configMap = (
-      for (
-      configs <- configuration.getConfig("controllers").toSeq;
-      key <- configs.subKeys;
-      entryForController <- readCompositeValue(configs, key);
-      parsedEntryForController = ControllerConfig.fromConfig(entryForController)
-    ) yield (key, parsedEntryForController)
+      for {
+        configs <- configuration.getConfig("controllers").toSeq
+        key <- subpaths(configs)
+        entryForController <- readCompositeValue(configs, key)
+        parsedEntryForController = ControllerConfig.fromConfig(entryForController)
+      } yield (key, parsedEntryForController)
       ).toMap
 
     ControllerConfigs(configMap)
+  }
+
+  private def subpaths(c: Configuration): List[String] = {
+
+    def loop(config: Configuration, acc: List[List[String]]): List[List[String]] = {
+      val subkeys = config.subKeys.toList
+
+      if (subkeys.isEmpty) {
+        acc
+      } else {
+        subkeys.flatMap { key ⇒
+          Try(config.getConfig(key)).toOption.flatten match {
+            case None ⇒
+              acc
+
+            case Some(c) ⇒
+              val next: List[List[String]] = acc match {
+                case Nil ⇒ List(List(key))
+                case l ⇒ l.map(key :: _)
+              }
+
+              loop(c, next)
+          }
+        }
+      }
+    }
+
+    loop(c, List.empty[List[String]]).map(_.reverse.mkString("."))
   }
 
   private def readCompositeValue(configuration : Configuration, key : String) : Option[Configuration] = {
