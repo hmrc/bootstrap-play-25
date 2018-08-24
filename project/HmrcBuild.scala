@@ -46,7 +46,7 @@ object Dependencies {
     "uk.gov.hmrc"           %% "crypto"              % "4.4.0",
     "uk.gov.hmrc"           %% "http-verbs"          % "7.3.0",
     "uk.gov.hmrc"           %% "http-verbs-play-25"  % "0.11.0",
-    "uk.gov.hmrc"           %% "play-auditing"       % "3.3.0",
+    "uk.gov.hmrc"           %% "play-auditing"       % "3.7.0",
     "uk.gov.hmrc"           %% "auth-client"         % "2.6.0",
     "uk.gov.hmrc"           %% "play-health"         % "2.1.0",
     "uk.gov.hmrc"           %% "play-config"         % "7.0.0",
@@ -54,6 +54,7 @@ object Dependencies {
     "com.typesafe.play"     %% "play"                % "2.5.12",
     "io.dropwizard.metrics" % "metrics-graphite"     % "3.2.5",
     "de.threedimensions"    %% "metrics-play"        % "2.5.13",
+    "com.ning"              % "async-http-client"    % "1.8.15",
     "ch.qos.logback"        % "logback-core"         % "1.1.7"
   )
 
