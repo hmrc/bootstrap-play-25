@@ -20,5 +20,5 @@ import uk.gov.hmrc.play.audit.http.config.AuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 class TestAuditConnector extends AuditConnector {
-  override def auditingConfig: AuditingConfig = AuditingConfig(None, false)
+  override def auditingConfig: AuditingConfig = AuditingConfig(None, false, auditSource = "test-audit-source")
 }

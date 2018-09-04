@@ -26,6 +26,7 @@ class LoadAuditingConfigSpec extends UnitSpec {
 
     "look for config first under auditing" in {
       val config = Configuration(
+        "appName"                        -> "test-audit-source",
         "auditing.enabled"               -> "true",
         "auditing.traceRequests"         -> "true",
         "auditing.consumer.baseUri.host" -> "localhost",
@@ -34,11 +35,14 @@ class LoadAuditingConfigSpec extends UnitSpec {
 
       LoadAuditingConfig(config, Mode.Test, "auditing") shouldBe AuditingConfig(
         Some(Consumer(BaseUri("localhost", 8100, "http"))),
-        enabled = true)
+        enabled = true,
+        auditSource = "test-audit-source"
+      )
     }
 
     "use env specific settings if these provided" in {
       val config = Configuration(
+        "appName"                        -> "test-audit-source",
         "Test.auditing.enabled"               -> "true",
         "Test.auditing.traceRequests"         -> "true",
         "Test.auditing.consumer.baseUri.host" -> "localhost",
@@ -51,7 +55,9 @@ class LoadAuditingConfigSpec extends UnitSpec {
 
       LoadAuditingConfig(config, Mode.Test, "auditing") shouldBe AuditingConfig(
         Some(Consumer(BaseUri("localhost", 8100, "http"))),
-        enabled = true)
+        enabled = true,
+        auditSource = "test-audit-source"
+      )
     }
 
     "allow audit to be disabled" in {
@@ -59,7 +65,7 @@ class LoadAuditingConfigSpec extends UnitSpec {
         "auditing.enabled" -> "false"
       )
 
-      LoadAuditingConfig(config, Mode.Test, "auditing") shouldBe AuditingConfig(None, enabled = false)
+      LoadAuditingConfig(config, Mode.Test, "auditing") shouldBe AuditingConfig(None, enabled = false, auditSource = "auditing disabled")
     }
   }
 }
