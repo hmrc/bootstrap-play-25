@@ -17,11 +17,11 @@
 package uk.gov.hmrc.play.bootstrap.http
 
 import javax.inject.{Inject, Singleton}
-
 import com.typesafe.config.Config
 import play.api.Configuration
 import play.api.libs.ws.WSClient
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.hooks.HttpHook
 import uk.gov.hmrc.play.audit.http.HttpAuditing
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.AppName
@@ -43,5 +43,5 @@ class DefaultHttpClient @Inject()(
     override def configuration: Configuration = config
   }.appName
 
-  override val hooks = Seq(AuditingHook)
+  override val hooks: Seq[HttpHook] = Seq(AuditingHook)
 }
