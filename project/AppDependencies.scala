@@ -1,43 +1,7 @@
 import play.sbt.PlayImport.filters
-import sbt.Keys.{version, _}
 import sbt._
 
-import uk.gov.hmrc.SbtAutoBuildPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
-
-object HmrcBuild extends Build {
-
-  val appName = "bootstrap-play-25"
-
-  val appDependencies = Dependencies.compile ++ Dependencies.test
-
-  lazy val library = Project(appName, file("."))
-    .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
-    .settings(
-      scalaVersion := "2.11.11",
-      libraryDependencies ++= appDependencies,
-      crossScalaVersions := Seq("2.11.11"),
-      javaOptions in Test ++= Seq(
-        "-Dconfig.resource=application.test.conf"
-      ),
-      fork in Test := true,
-      scalacOptions ++= Seq(
-//        "-Xfatal-warnings",
-        "-deprecation"
-      ),
-      resolvers := Seq(
-        Resolver.bintrayRepo("hmrc", "releases"),
-        Resolver.bintrayRepo("hmrc", "snapshots"),
-        Resolver.bintrayRepo("hmrc", "release-candidates"),
-        Resolver.typesafeRepo("releases"),
-        Resolver.jcenterRepo
-      )
-    )
-    .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
-
-}
-
-object Dependencies {
+object AppDependencies {
 
   import play.core.PlayVersion
 
