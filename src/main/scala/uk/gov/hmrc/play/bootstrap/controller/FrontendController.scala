@@ -29,7 +29,7 @@ import scala.concurrent._
 trait FrontendController extends BaseController with Utf8MimeTypes {
 
   override implicit def hc(implicit rh: RequestHeader): HeaderCarrier =
-    HeaderCarrierConverter.fromHeadersAndSession(rh.headers, Some(rh.session))
+    HeaderCarrierConverter.fromHeadersAndSessionAndRequest(rh.headers, Some(rh.session), Some(rh))
 
   implicit def mdcExecutionContext(implicit loggingDetails: LoggingDetails): ExecutionContext =
     MdcLoggingExecutionContext.fromLoggingDetails
