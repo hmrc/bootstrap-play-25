@@ -18,7 +18,6 @@ object AppDependencies {
     "com.typesafe.play"     %% "play"                % "2.5.12",
     "io.dropwizard.metrics" % "metrics-graphite"     % "3.2.5",
     "de.threedimensions"    %% "metrics-play"        % "2.5.13",
-    "com.ning"              % "async-http-client"    % "1.8.15",
     "ch.qos.logback"        % "logback-core"         % "1.1.7"
   )
 
