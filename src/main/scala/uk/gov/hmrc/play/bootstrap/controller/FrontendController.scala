@@ -31,6 +31,7 @@ trait FrontendController extends BaseController with Utf8MimeTypes {
   override implicit def hc(implicit rh: RequestHeader): HeaderCarrier =
     HeaderCarrierConverter.fromHeadersAndSessionAndRequest(rh.headers, Some(rh.session), Some(rh))
 
+  @deprecated("The MDCLoggingExecutionContext is no longer required", "-")
   implicit def mdcExecutionContext(implicit loggingDetails: LoggingDetails): ExecutionContext =
     MdcLoggingExecutionContext.fromLoggingDetails
 
@@ -39,7 +40,6 @@ trait FrontendController extends BaseController with Utf8MimeTypes {
       _.withSession(request.session - key)
     }
   }
-
 }
 
 object UnauthorisedAction {
@@ -60,6 +60,7 @@ object UnauthorisedAction {
   *
   * For .async actions the MdcLoggingExecutionContext takes care of it.
   */
+@deprecated("The MDCLoggingExecutionContext is no longer required", "-")
 object ActionWithMdc extends ActionBuilder[Request] {
 
   private def storeHeaders(request: RequestHeader) {
@@ -79,5 +80,4 @@ object ActionWithMdc extends ActionBuilder[Request] {
     MDC.clear()
     r
   }
-
 }
