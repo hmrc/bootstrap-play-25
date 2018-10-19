@@ -39,7 +39,8 @@ class FrontendFilters @Inject()(
   csrfFilter: CSRFFilter,
   cookieCryptoFilter: CookieCryptoFilter,
   sessionTimeoutFilter: SessionTimeoutFilter,
-  cacheControlFilter: CacheControlFilter
+  cacheControlFilter: CacheControlFilter,
+  mdcFilter: MDCFilter
 ) extends HttpFilters {
 
   val frontendFilters = Seq(
@@ -51,7 +52,8 @@ class FrontendFilters @Inject()(
     frontendAuditFilter,
     sessionTimeoutFilter,
     csrfFilter,
-    cacheControlFilter
+    cacheControlFilter,
+    mdcFilter
   )
 
   lazy val enableSecurityHeaderFilter: Boolean =
