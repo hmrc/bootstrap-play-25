@@ -26,11 +26,13 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
 import org.scalatest.Matchers._
-import org.scalatest.concurrent.{Eventually, ScalaFutures}
-import org.scalatest.mock.MockitoSugar
-import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest._
+import org.scalatest.concurrent.{Eventually, ScalaFutures}
+import org.scalatest.mockito.MockitoSugar
+import org.scalatest.tagobjects.Retryable
+import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play._
+import org.scalatestplus.play.guice.{GuiceOneAppPerTest, GuiceOneServerPerTest}
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.ws.WSClient
@@ -44,7 +46,6 @@ import uk.gov.hmrc.play.audit.EventKeys
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.bootstrap.filters.frontend.deviceid.DeviceFingerprint
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -54,15 +55,15 @@ class FrontendAuditFilterSpec
     with Eventually
     with ScalaFutures
     with MockitoSugar
-    with OneAppPerTest
-    with BeforeAndAfterEach {
+    with GuiceOneAppPerTest
+    with BeforeAndAfterEach
+    with Retries {
 
   implicit val system       = ActorSystem("test")
   implicit val materializer = ActorMaterializer()
 
   def enumerateResponseBody(r: Result): Future[Done] =
-    r.body.dataStream.runForeach({ _ =>
-      })
+    r.body.dataStream.runForeach(_ => ())
 
   def nextAction(implicit ec: ExecutionContext): Action[AnyContent] = Action(NotFound("404 Not Found"))
 
@@ -154,7 +155,7 @@ class FrontendAuditFilterSpec
           val event = verifyAndRetrieveEvent
           event.auditType shouldBe "RequestReceived"
           event.detail    should contain("requestBody" -> "csrfToken=acb&userId=113244018119&password=#########&key1=")
-        }(PatienceConfig(Span(5, Seconds), Span(200, Millis)))
+        }(PatienceConfig(Span(5, Seconds), Span(200, Millis)), implicitly)
     }
 
     "generate audit events with the device finger print when it is supplied in a request cookie" when {
@@ -180,14 +181,15 @@ class FrontendAuditFilterSpec
         behave like expected
       }
 
-      def expected() = eventually {
-        val event = verifyAndRetrieveEvent
-        event.auditType shouldBe "RequestReceived"
-        event.detail should contain(
-          "deviceFingerprint" -> ("""{"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.48 Safari/537.36",""" +
-            """"language":"en-US","colorDepth":24,"resolution":"800x1280","timezone":0,"sessionStorage":true,"localStorage":true,"indexedDB":true,"platform":"MacIntel",""" +
-            """"doNotTrack":true,"numberOfPlugins":5,"plugins":["Shockwave Flash","Chrome Remote Desktop Viewer","Native Client","Chrome PDF Viewer","QuickTime Plug-in 7.7.1"]}"""))
-      }
+      def expected() =
+        eventually {
+          val event = verifyAndRetrieveEvent
+          event.auditType shouldBe "RequestReceived"
+          event.detail should contain(
+            "deviceFingerprint" -> ("""{"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.48 Safari/537.36",""" +
+              """"language":"en-US","colorDepth":24,"resolution":"800x1280","timezone":0,"sessionStorage":true,"localStorage":true,"indexedDB":true,"platform":"MacIntel",""" +
+              """"doNotTrack":true,"numberOfPlugins":5,"plugins":["Shockwave Flash","Chrome Remote Desktop Viewer","Native Client","Chrome PDF Viewer","QuickTime Plug-in 7.7.1"]}"""))
+        }(PatienceConfig(Span(5, Seconds), Span(200, Millis)), implicitly)
     }
 
     "generate audit events without the device finger print when it is not supplied in a request cookie" when {
@@ -205,11 +207,12 @@ class FrontendAuditFilterSpec
         behave like expected
       }
 
-      def expected() = eventually {
-        val event = verifyAndRetrieveEvent
-        event.auditType shouldBe "RequestReceived"
-        event.detail    should contain("deviceFingerprint" -> "-")
-      }
+      def expected() =
+        eventually {
+          val event = verifyAndRetrieveEvent
+          event.auditType shouldBe "RequestReceived"
+          event.detail    should contain("deviceFingerprint" -> "-")
+        }(PatienceConfig(Span(5, Seconds), Span(200, Millis)), implicitly)
     }
 
     "generate audit events without the device finger print when the value supplied in the request cookie is invalid" when {
@@ -464,7 +467,7 @@ class FrontendAuditFilterServerSpec
     with FrontendAuditFilterInstance
     with Eventually
     with MockitoSugar
-    with OneServerPerTest
+    with GuiceOneServerPerTest
     with BeforeAndAfterEach {
 
   override def beforeEach() {
@@ -549,6 +552,9 @@ class FrontendAuditFilterServerSpec
 trait FrontendAuditFilterInstance {
   import MockitoSugar._
 
+  private implicit val system                     = ActorSystem("test")
+  private implicit val materializer: Materializer = ActorMaterializer()
+
   protected val filter: FrontendAuditFilter = new FrontendAuditFilter {
 
     override val maskedFormFields: Seq[String] = Seq("password")
@@ -560,9 +566,7 @@ trait FrontendAuditFilterInstance {
     override val appName: String = "app"
 
     override def controllerNeedsAuditing(controllerName: String): Boolean = false
-
-    implicit val system                     = ActorSystem("test")
-    implicit override def mat: Materializer = ActorMaterializer()
+    override implicit def mat: Materializer                               = materializer
   }
 
   protected def verifyAndRetrieveEvent: DataEvent = {

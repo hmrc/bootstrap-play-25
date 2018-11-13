@@ -8,7 +8,7 @@ object AppDependencies {
   val compile = Seq(
     filters,
     "uk.gov.hmrc"                    %% "crypto"                     % "4.4.0",
-    "uk.gov.hmrc"                    %% "http-verbs"                 % "8.7.0-play-25",
+    "uk.gov.hmrc"                    %% "http-verbs"                 % "8.8.0-play-25-SNAPSHOT",
     "uk.gov.hmrc"                    %% "play-auditing"              % "3.12.0-play-25",
     "uk.gov.hmrc"                    %% "auth-client"                % "2.11.0-play-25",
     "uk.gov.hmrc"                    %% "play-health"                % "3.7.0-play-25",
@@ -20,11 +20,11 @@ object AppDependencies {
     "ch.qos.logback"                 % "logback-core"                % "1.1.7",
     "com.github.rishabh9"            %% "mdc-propagation-dispatcher" % "0.0.5",
     // force dependencies due to security flaws found in jackson-databind < 2.9.x using XRay
-    "com.fasterxml.jackson.core"     % "jackson-core"            % "2.9.7" force (),
-    "com.fasterxml.jackson.core"     % "jackson-databind"        % "2.9.7" force (),
-    "com.fasterxml.jackson.core"     % "jackson-annotations"     % "2.9.7" force (),
-    "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8"   % "2.9.7" force (),
-    "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % "2.9.7" force ()
+    "com.fasterxml.jackson.core"     % "jackson-core"            % "2.9.7",
+    "com.fasterxml.jackson.core"     % "jackson-databind"        % "2.9.7",
+    "com.fasterxml.jackson.core"     % "jackson-annotations"     % "2.9.7",
+    "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8"   % "2.9.7",
+    "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % "2.9.7"
   )
 
   val test = Seq(
@@ -33,7 +33,7 @@ object AppDependencies {
     "org.mockito"            % "mockito-all"         % "1.9.5"             % "test",
     "org.pegdown"            % "pegdown"             % "1.5.0"             % "test",
     "com.github.tomakehurst" % "wiremock"            % "2.7.1"             % "test",
-    "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1"             % "test",
+    "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1"             % "test",
     "uk.gov.hmrc"            %% "hmrctest"           % "2.4.0"             % "test"
   )
 }
