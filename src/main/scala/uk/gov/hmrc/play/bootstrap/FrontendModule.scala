@@ -18,7 +18,7 @@ package uk.gov.hmrc.play.bootstrap
 
 import play.api.inject.Binding
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.crypto.{ApplicationCrypto, ApplicationCryptoDI}
+import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.play.bootstrap.config.CryptoValidation
 import uk.gov.hmrc.play.bootstrap.filters.AuditFilter
 import uk.gov.hmrc.play.bootstrap.filters.frontend._
@@ -31,7 +31,7 @@ class FrontendModule extends BootstrapModule {
     super.bindings(environment, configuration) ++ Seq(
       bind[AuditFilter].to[FrontendAuditFilter],
       bind[SessionCookieCrypto].toProvider[SessionCookieCryptoProvider],
-      bind[ApplicationCrypto].to[ApplicationCryptoDI],
+      bind[ApplicationCrypto].toInstance(new ApplicationCrypto(configuration.underlying)),
       bind[CookieCryptoFilter].to[DefaultCookieCryptoFilter],
       bind[FrontendAuditFilter].to[DefaultFrontendAuditFilter],
       bind[DeviceIdFilter].to[DefaultDeviceIdFilter],

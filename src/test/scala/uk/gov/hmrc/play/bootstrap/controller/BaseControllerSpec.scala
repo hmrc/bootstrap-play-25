@@ -22,7 +22,6 @@ import play.api.mvc.Headers
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.audit.AuditExtensions
 
-
 class BaseControllerSpec extends WordSpecLike with Matchers {
 
   val baseController = new BaseController {}
@@ -31,9 +30,9 @@ class BaseControllerSpec extends WordSpecLike with Matchers {
     "add path to header carrier for tags" in {
       //this test ensures that the combination of http-verbs-play-25 and play-auditing adds
       //the request path as a tag for classes that extend BaseController
-      val request = new FakeRequest[JsValue]("GET", "/the/request/path", Headers(), Json.obj())
+      val request       = new FakeRequest[JsValue]("GET", "/the/request/path", Headers(), Json.obj())
       val headerCarrier = baseController.hc(request)
-      val tags = new AuditExtensions.AuditHeaderCarrier(headerCarrier).toAuditTags()
+      val tags          = new AuditExtensions.AuditHeaderCarrier(headerCarrier).toAuditTags()
       tags.get("path") shouldBe Some("/the/request/path")
     }
   }

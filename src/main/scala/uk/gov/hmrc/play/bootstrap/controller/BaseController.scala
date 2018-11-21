@@ -36,7 +36,8 @@ trait Utf8MimeTypes {
 
 trait BaseController extends Controller with Utf8MimeTypes {
 
-  implicit def hc(implicit rh: RequestHeader) = HeaderCarrierConverter.fromHeadersAndSessionAndRequest(rh.headers, request=Some(rh))
+  implicit def hc(implicit rh: RequestHeader) =
+    HeaderCarrierConverter.fromHeadersAndSessionAndRequest(rh.headers, request = Some(rh))
 
   protected def withJsonBody[T](
     f: (T) => Future[Result])(implicit request: Request[JsValue], m: Manifest[T], reads: Reads[T]) =

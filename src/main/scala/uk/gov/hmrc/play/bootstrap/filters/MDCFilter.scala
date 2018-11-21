@@ -27,13 +27,13 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 import scala.concurrent.Future
 
 @Singleton
-class MDCFilter @Inject() (val mat: Materializer, config: Configuration) extends Filter {
+class MDCFilter @Inject()(val mat: Materializer, config: Configuration) extends Filter {
 
-  private val appName: String = config.underlying.getString("appName")
+  private val appName: String            = config.underlying.getString("appName")
   private val dateFormat: Option[String] = config.getString("logger.json.dateformat")
 
   private val extras: Set[(String, String)] = Set(
-    Some("appName"                -> appName),
+    Some("appName"                          -> appName),
     dateFormat.map("logger.json.dateformat" -> _)
   ).flatten
 
