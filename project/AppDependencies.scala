@@ -5,26 +5,31 @@ object AppDependencies {
 
   import play.core.PlayVersion
 
+  val akkaVersion = "2.5.18"
+
   val compile = Seq(
     filters,
-    "uk.gov.hmrc"                    %% "crypto"                     % "4.4.0",
-    "uk.gov.hmrc"                    %% "http-verbs"                 % "8.7.0-play-25",
-    "uk.gov.hmrc"                    %% "play-auditing"              % "3.12.0-play-25",
-    "uk.gov.hmrc"                    %% "auth-client"                % "2.11.0-play-25",
-    "uk.gov.hmrc"                    %% "play-health"                % "3.7.0-play-25",
-    "uk.gov.hmrc"                    %% "play-config"                % "7.0.0",
-    "uk.gov.hmrc"                    %% "logback-json-logger"        % "3.1.0",
-    "com.typesafe.play"              %% "play"                       % PlayVersion.current,
-    "io.dropwizard.metrics"          % "metrics-graphite"            % "3.2.5",
-    "de.threedimensions"             %% "metrics-play"               % "2.5.13",
-    "ch.qos.logback"                 % "logback-core"                % "1.1.7",
-    "com.github.rishabh9"            %% "mdc-propagation-dispatcher" % "0.0.5",
+    "com.typesafe.akka"     %% "akka-actor"                 % akkaVersion,
+    "com.typesafe.akka"     %% "akka-stream"                % akkaVersion,
+    "com.typesafe.akka"     %% "akka-slf4j"                 % akkaVersion,
+    "uk.gov.hmrc"           %% "crypto"                     % "4.4.0",
+    "uk.gov.hmrc"           %% "http-verbs"                 % "8.9.0-play-25-SNAPSHOT",
+    "uk.gov.hmrc"           %% "play-auditing"              % "3.12.0-play-25",
+    "uk.gov.hmrc"           %% "auth-client"                % "2.11.0-play-25",
+    "uk.gov.hmrc"           %% "play-health"                % "3.7.0-play-25",
+    "uk.gov.hmrc"           %% "play-config"                % "7.0.0",
+    "uk.gov.hmrc"           %% "logback-json-logger"        % "3.1.0",
+    "com.typesafe.play"     %% "play"                       % PlayVersion.current,
+    "io.dropwizard.metrics" % "metrics-graphite"            % "3.2.5",
+    "de.threedimensions"    %% "metrics-play"               % "2.5.13",
+    "ch.qos.logback"        % "logback-classic"             % "1.2.3",
+    "com.github.rishabh9"   %% "mdc-propagation-dispatcher" % "0.0.5",
     // force dependencies due to security flaws found in jackson-databind < 2.9.x using XRay
-    "com.fasterxml.jackson.core"     % "jackson-core"            % "2.9.7" force (),
-    "com.fasterxml.jackson.core"     % "jackson-databind"        % "2.9.7" force (),
-    "com.fasterxml.jackson.core"     % "jackson-annotations"     % "2.9.7" force (),
-    "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8"   % "2.9.7" force (),
-    "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % "2.9.7" force ()
+    "com.fasterxml.jackson.core"     % "jackson-core"            % "2.9.7",
+    "com.fasterxml.jackson.core"     % "jackson-databind"        % "2.9.7",
+    "com.fasterxml.jackson.core"     % "jackson-annotations"     % "2.9.7",
+    "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8"   % "2.9.7",
+    "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % "2.9.7"
   )
 
   val test = Seq(
