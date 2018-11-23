@@ -50,7 +50,8 @@ object LoadAuditingConfig {
               )
             }
             .getOrElse(throw new Exception("Missing consumer configuration for auditing"))),
-          auditSource = configuration.getString("appName").getOrElse(throw new Exception("Missing app name needed for auditSource"))
+          auditSource =
+            configuration.getString("appName").getOrElse(throw new Exception("Missing app name needed for auditSource"))
         )
       } else {
         AuditingConfig(consumer = None, enabled = false, auditSource = "auditing disabled")

@@ -17,10 +17,8 @@
 package uk.gov.hmrc.play.bootstrap.config
 
 import javax.inject.Inject
+import uk.gov.hmrc.crypto.ApplicationCrypto
 
-import play.api.Configuration
-import uk.gov.hmrc.crypto.ApplicationCryptoDI
-
-class CryptoValidation @Inject()(configuration: Configuration) {
-  new ApplicationCryptoDI(configuration).verifyConfiguration()
+class CryptoValidation @Inject()(applicationCrypto: ApplicationCrypto) {
+  applicationCrypto.verifyConfiguration()
 }

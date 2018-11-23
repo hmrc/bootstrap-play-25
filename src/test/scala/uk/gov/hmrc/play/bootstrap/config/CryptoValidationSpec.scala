@@ -17,23 +17,28 @@
 package uk.gov.hmrc.play.bootstrap.config
 
 import org.scalatest.{Matchers, WordSpec}
+import com.typesafe.config.{Config, ConfigFactory}
 import play.api.Configuration
+import uk.gov.hmrc.crypto.ApplicationCrypto
 
 class CryptoValidationSpec extends WordSpec with Matchers {
 
   "CryptoValidation" must {
 
     "Be created successfully if crypto configuration is valid" in {
-      new CryptoValidation(
-        Configuration(
-          "cookie.encryption.key"         -> "gvBoGdgzqG1AarzF1LY0zQ==",
-          "queryParameter.encryption.key" -> "gvBoGdgzqG1AarzF1LY0zQ==",
-          "sso.encryption.key"            -> "P5xsJ9Nt+quxGZzB4DeLfw=="
-        ))
+      import collection.JavaConverters._
+      val confProperties = Map(
+        "cookie.encryption.key"         -> "gvBoGdgzqG1AarzF1LY0zQ==",
+        "queryParameter.encryption.key" -> "gvBoGdgzqG1AarzF1LY0zQ==",
+        "sso.encryption.key"            -> "P5xsJ9Nt+quxGZzB4DeLfw=="
+      )
+      val config = Configuration(ConfigFactory.parseMap(confProperties.asJava))
+      new CryptoValidation(new ApplicationCrypto(config.underlying))
     }
 
     "Fail if crypto configuration is invalid" in {
-      an[RuntimeException] shouldBe thrownBy(new CryptoValidation(Configuration()))
+      val invalidConfiguration = new ApplicationCrypto(ConfigFactory.empty())
+      an[RuntimeException] shouldBe thrownBy(new CryptoValidation(invalidConfiguration))
     }
 
   }
