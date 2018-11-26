@@ -106,7 +106,7 @@ class MDCLoggingSpec extends WordSpec with MustMatchers with ScalaFutures with O
 
         val mdc = contentAsJson(result).as[Map[String, String]]
 
-        mdc must contain allOf(
+        mdc                             must contain allOf (
           "appName"                     -> "test-application",
           "logger.json.dateformat"      -> "YYYY-mm-DD",
           HMRCHeaderNames.xSessionId    -> "some session id",

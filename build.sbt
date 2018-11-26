@@ -3,7 +3,7 @@ val appName = "bootstrap-play-25"
 lazy val library = Project(appName, file("."))
   .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
   .settings(
-    majorVersion := 3,
+    majorVersion := 4,
     makePublicallyAvailableOnBintray := true
   )
   .settings(
