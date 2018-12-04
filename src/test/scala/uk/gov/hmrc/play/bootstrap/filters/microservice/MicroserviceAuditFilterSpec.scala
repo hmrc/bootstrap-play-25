@@ -101,7 +101,7 @@ class MicroserviceAuditFilterSpec
         event.tags("Akamai-Reputation") shouldBe akamaiReputation
         event.detail("deviceID")        shouldBe deviceID
         event.detail("responseMessage") shouldBe actionNotFoundMessage
-      }(config)
+      }(config, implicitly)
     }
 
     "audit a response even when an action further down the chain throws an exception" in {
@@ -126,7 +126,7 @@ class MicroserviceAuditFilterSpec
         event.tags("X-Session-ID")      shouldBe xSessionId
         event.tags("Akamai-Reputation") shouldBe akamaiReputation
         event.detail("deviceID")        shouldBe deviceID
-      }(config)
+      }(config, implicitly)
     }
   }
 }
