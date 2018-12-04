@@ -154,7 +154,7 @@ class FrontendAuditFilterSpec
           val event = verifyAndRetrieveEvent
           event.auditType shouldBe "RequestReceived"
           event.detail    should contain("requestBody" -> "csrfToken=acb&userId=113244018119&password=#########&key1=")
-        }(PatienceConfig(Span(5, Seconds), Span(200, Millis)))
+        }(PatienceConfig(Span(5, Seconds), Span(200, Millis)), implicitly)
     }
 
     "generate audit events with the device finger print when it is supplied in a request cookie" when {

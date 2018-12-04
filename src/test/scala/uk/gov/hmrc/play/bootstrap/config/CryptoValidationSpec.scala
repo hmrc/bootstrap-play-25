@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.play.bootstrap.config
 
+import com.typesafe.config.ConfigFactory
 import org.scalatest.{Matchers, WordSpec}
-import com.typesafe.config.{Config, ConfigFactory}
 import play.api.Configuration
 import uk.gov.hmrc.crypto.ApplicationCrypto
 
