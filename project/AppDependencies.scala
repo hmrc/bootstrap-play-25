@@ -29,7 +29,8 @@ object AppDependencies {
     "com.fasterxml.jackson.core"     % "jackson-databind"        % "2.9.7",
     "com.fasterxml.jackson.core"     % "jackson-annotations"     % "2.9.7",
     "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8"   % "2.9.7",
-    "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % "2.9.7"
+    "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % "2.9.7",
+    "xerces"                         % "xercesImpl"              % "2.12.0"
   )
 
   val test = Seq(
