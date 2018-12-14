@@ -13,7 +13,7 @@ object AppDependencies {
     "com.typesafe.akka"     %% "akka-stream"                % akkaVersion,
     "com.typesafe.akka"     %% "akka-slf4j"                 % akkaVersion,
     "uk.gov.hmrc"           %% "crypto"                     % "5.2.0",
-    "uk.gov.hmrc"           %% "http-verbs"                 % "8.10.0-play-25",
+    "uk.gov.hmrc"           %% "http-verbs"                 % "9.0.0-play-25",
     "uk.gov.hmrc"           %% "play-auditing"              % "3.14.0-play-25",
     "uk.gov.hmrc"           %% "auth-client"                % "2.11.0-play-25",
     "uk.gov.hmrc"           %% "play-health"                % "3.9.0-play-25",
@@ -30,7 +30,8 @@ object AppDependencies {
     "com.fasterxml.jackson.core"     % "jackson-annotations"     % "2.9.7",
     "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8"   % "2.9.7",
     "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % "2.9.7",
-    "xerces"                         % "xercesImpl"              % "2.12.0"
+    // force dependencies due to security flaws found in xercesImpl 2.11.0
+    "xerces" % "xercesImpl" % "2.12.0"
   )
 
   val test = Seq(

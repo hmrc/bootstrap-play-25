@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.play.bootstrap.http
 
+import akka.actor.ActorSystem
 import javax.inject.{Inject, Singleton}
 import com.typesafe.config.Config
 import play.api.Configuration
@@ -33,10 +34,12 @@ trait HttpClient extends HttpGet with HttpPut with HttpPost with HttpDelete with
 class DefaultHttpClient @Inject()(
   config: Configuration,
   override val auditConnector: AuditConnector,
-  override val wsClient: WSClient)
+  override val wsClient: WSClient,
+  override protected val actorSystem: ActorSystem)
     extends HttpClient
     with WSHttp
     with HttpAuditing {
+
   override lazy val configuration: Option[Config] = Option(config.underlying)
 
   override val appName: String = new AppName {
