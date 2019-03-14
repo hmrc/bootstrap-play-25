@@ -48,7 +48,7 @@ class JsonErrorHandler @Inject()(val configuration: Configuration, auditConnecto
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
 
-    implicit val headerCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val headerCarrier = HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, request = Some(request))
 
     statusCode match {
       case play.mvc.Http.Status.NOT_FOUND =>
@@ -65,7 +65,7 @@ class JsonErrorHandler @Inject()(val configuration: Configuration, auditConnecto
   }
 
   override def onServerError(request: RequestHeader, ex: Throwable) = {
-    implicit val headerCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val headerCarrier = HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, request = Some(request))
 
     Logger.error(s"! Internal server error, for (${request.method}) [${request.uri}] -> ", ex)
 
