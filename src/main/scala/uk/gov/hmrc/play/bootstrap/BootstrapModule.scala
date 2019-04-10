@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.play.bootstrap
 
+import javax.inject.Singleton
 import play.api.inject.{Binding, Module}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.{ControllerConfigs, ServicesConfigProvider}
@@ -27,7 +28,7 @@ abstract class BootstrapModule extends Module {
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = Seq(
     bind[CacheControlConfig].toInstance(CacheControlConfig.fromConfig(configuration)),
     bind[ControllerConfigs].toInstance(ControllerConfigs.fromConfig(configuration)),
-    bind[ServicesConfig].toProvider[ServicesConfigProvider],
+    bind[ServicesConfig].toProvider[ServicesConfigProvider].in[Singleton],
     bind[LoggingFilter].to[DefaultLoggingFilter]
   )
 }
