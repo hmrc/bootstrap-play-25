@@ -97,6 +97,18 @@ class SomeConnector @Inject() (client: HttpClient) {
 }
 ```
 
+## Services config
+
+Bootstrap library comes with default binding for `ServicesConfig`. `ServicesConfig` has been inlined into `bootstrap-play-26` from `play-config`.
+To make further upgrades plainless please use
+```scala
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+```
+instead
+```scala
+import uk.gov.hmrc.play.config.ServicesConfig
+```
+
 ## User Authorisation
 
 The library supports user authorisation on microservices
