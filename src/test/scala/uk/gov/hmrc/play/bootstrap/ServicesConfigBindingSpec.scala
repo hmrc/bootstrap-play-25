@@ -38,7 +38,7 @@ class ServicesConfigBindingSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "A frotnend service" must {
+  "A frontend service" must {
     behave like anApplicationWithBoundedServicesConfig("frontend.test.conf")
   }
 

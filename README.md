@@ -100,7 +100,7 @@ class SomeConnector @Inject() (client: HttpClient) {
 ## Services config
 
 Bootstrap library comes with default binding for `ServicesConfig`. `ServicesConfig` has been inlined into `bootstrap-play-26` from `play-config`.
-To make further upgrades plainless please use
+To make further upgrades painless please use
 ```scala
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 ```
