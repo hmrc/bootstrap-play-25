@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.play.bootstrap.binders
 
-import java.net.URL
+import java.net.{URL, URLEncoder}
 
 import play.api.mvc.QueryStringBindable
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrlPolicy.Id
@@ -30,6 +30,11 @@ object RedirectUrlPolicy {
   implicit def toFuture(in : RedirectUrlPolicy[Id]) : RedirectUrlPolicy[Future] = new RedirectUrlPolicy[Future] {
     override def applies(url: String): Future[Boolean] = Future.successful(in.applies(url))
   }
+}
+
+case class SafeRedirectUrl(url : String) extends AnyVal {
+  override def toString = url
+  def encodedUrl = URLEncoder.encode(url, "UTF-8")
 }
 
 sealed trait RedirectUrlPolicy[T[_]] {
@@ -49,14 +54,22 @@ case object OnlyRelative extends RedirectUrlPolicy[Id] {
 }
 
 object AbsoluteWithHostnameFromWhitelist {
-  def apply(allowedHosts : Seq[String]) = new RedirectUrlPolicy[Id] {
+
+  def apply(allowedHosts : String*) = new RedirectUrlPolicy[Id] {
     override def applies(url: String): Id[Boolean] = Try(new URL(url)) match {
       case Success(parsedUrl) if allowedHosts.contains(parsedUrl.getHost) => true
       case _=> false
     }
   }
 
-  def apply(allowedHostsFn : => Future[Seq[String]])(implicit ec : ExecutionContext) = new RedirectUrlPolicy[Future] {
+  def apply(allowedHosts : Set[String]) = new RedirectUrlPolicy[Id] {
+    override def applies(url: String): Id[Boolean] = Try(new URL(url)) match {
+      case Success(parsedUrl) if allowedHosts.contains(parsedUrl.getHost) => true
+      case _=> false
+    }
+  }
+
+  def apply(allowedHostsFn : => Future[Set[String]])(implicit ec : ExecutionContext) = new RedirectUrlPolicy[Future] {
     override def applies(url: String): Future[Boolean] = Try(new URL(url)) match {
       case Success(parsedUrl)  => for (allowedHosts <- allowedHostsFn) yield allowedHosts.contains(parsedUrl.getHost)
       case _=> Future.successful(false)
@@ -64,6 +77,7 @@ object AbsoluteWithHostnameFromWhitelist {
   }
 }
 
+@scala.annotation.implicitNotFound("You have to add the following import: 'import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl._' ")
 trait Applicative[T[_]] {
   def map[K,V](t : T[K])(fn : K => V) : T[V]
   def product[A, B](fa: T[A], fb: T[B]): T[(A, B)]
@@ -79,14 +93,14 @@ case class RedirectUrl(private val url: String) {
   def getEither[T[_]](policy: RedirectUrlPolicy[T])(implicit f : Applicative[T]) =
     f.map(policy.applies(url)) { result =>
       if (result) {
-        Right(url)
+        Right(SafeRedirectUrl(url))
       } else {
         Left(s"Provided URL [$url] doesn't comply with redirect policy")
       }
     }
 
   def get[T[_]](policy: RedirectUrlPolicy[T])(implicit f : Applicative[T]) =
-    f.map(getEither(policy))(_.fold[String](
+    f.map(getEither(policy))(_.fold[SafeRedirectUrl](
       message => throw new IllegalArgumentException(message),
       value => value
     )
@@ -132,25 +146,4 @@ object RedirectUrl {
       b <- fb
     } yield (a, b)
   }
-}
-
-
-object test {
-
-  import RedirectUrl._
-  import scala.concurrent.ExecutionContext.Implicits.global
-
-  val continueUrl = RedirectUrl("http://www.google.com")
-
-
-  val value1: Id[String] = continueUrl.get(OnlyRelative)
-
-  val value2: Id[String] = continueUrl.get(OnlyRelative | AbsoluteWithHostnameFromWhitelist(Seq("www.google.com", "www.tax.service.gov.uk")))
-
-  def fetchWhitelist() : Future[Seq[String]] = {
-    Future.successful(Seq("xxx"))
-  }
-
-  val value3: Future[String] = continueUrl.get(OnlyRelative | AbsoluteWithHostnameFromWhitelist(fetchWhitelist()))
-
 }
