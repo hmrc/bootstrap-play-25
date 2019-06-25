@@ -57,7 +57,7 @@ class JsonErrorHandler @Inject()(val configuration: Configuration, auditConnecto
           NotFound(Json.toJson(ErrorResponse(NOT_FOUND, "URI not found", requested = Some(request.path)))))
       case play.mvc.Http.Status.BAD_REQUEST =>
         auditConnector.sendEvent(dataEvent("ServerValidationError", "Request bad format exception", request))
-        Future.successful(BadRequest(Json.toJson(ErrorResponse(BAD_REQUEST, "bad request"))))
+        Future.successful(BadRequest(Json.toJson(ErrorResponse(BAD_REQUEST, message))))
       case _ =>
         auditConnector.sendEvent(dataEvent("ClientError", s"A client error occurred, status: $statusCode", request))
         Future.successful(Status(statusCode)(Json.toJson(ErrorResponse(statusCode, message))))
