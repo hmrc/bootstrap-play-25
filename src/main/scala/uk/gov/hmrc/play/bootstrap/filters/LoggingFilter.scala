@@ -65,10 +65,10 @@ trait LoggingFilter extends Filter {
 
     result
       .map { result =>
-        s"${ld.requestChain.value} $start ${rh.method} ${rh.uri} ${result.header.status} ${elapsedTime}ms"
+        s"${rh.method} ${rh.uri} ${result.header.status} ${elapsedTime}ms"
       }
       .recover {
-        case t => s"${ld.requestChain.value} $start ${rh.method} ${rh.uri} $t ${elapsedTime}ms"
+        case t => s"${rh.method} ${rh.uri} $t ${elapsedTime}ms"
       }
   }
 }
