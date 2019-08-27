@@ -13,11 +13,11 @@ object AppDependencies {
     "com.typesafe.akka"     %% "akka-stream"                % akkaVersion,
     "com.typesafe.akka"     %% "akka-slf4j"                 % akkaVersion,
     "uk.gov.hmrc"           %% "crypto"                     % "5.2.0",
-    "uk.gov.hmrc"           %% "http-verbs"                 % "9.4.0-play-25",
-    "uk.gov.hmrc"           %% "play-auditing"              % "3.16.0-play-25",
-    "uk.gov.hmrc"           %% "auth-client"                % "2.11.0-play-25",
-    "uk.gov.hmrc"           %% "play-health"                % "3.10.0-play-25",
-    "uk.gov.hmrc"           %% "play-config"                % "7.3.0",
+    "uk.gov.hmrc"           %% "http-verbs"                 % "9.8.0-play-25",
+    "uk.gov.hmrc"           %% "play-auditing"              % "4.0.0-play-25",
+    "uk.gov.hmrc"           %% "auth-client"                % "2.27.0-play-25",
+    "uk.gov.hmrc"           %% "play-health"                % "3.14.0-play-25",
+    "uk.gov.hmrc"           %% "play-config"                % "7.5.0",
     "uk.gov.hmrc"           %% "logback-json-logger"        % "4.3.0",
     "com.typesafe.play"     %% "play"                       % PlayVersion.current,
     "io.dropwizard.metrics" % "metrics-graphite"            % "3.2.5",
@@ -41,6 +41,6 @@ object AppDependencies {
     "org.pegdown"            % "pegdown"             % "1.5.0"             % "test",
     "com.github.tomakehurst" % "wiremock"            % "2.7.1"             % "test",
     "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1"             % "test",
-    "uk.gov.hmrc"            %% "hmrctest"           % "3.3.0"             % "test"
+    "uk.gov.hmrc"            %% "hmrctest"           % "3.9.0-play-25"     % "test"
   )
 }
