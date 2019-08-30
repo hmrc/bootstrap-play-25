@@ -14,7 +14,7 @@ object AppDependencies {
     "com.typesafe.akka"     %% "akka-slf4j"                 % akkaVersion,
     "uk.gov.hmrc"           %% "crypto"                     % "5.2.0",
     "uk.gov.hmrc"           %% "http-verbs"                 % "9.8.0-play-25",
-    "uk.gov.hmrc"           %% "play-auditing"              % "4.0.0-play-25",
+    "uk.gov.hmrc"           %% "play-auditing"              % "4.2.0-play-25",
     "uk.gov.hmrc"           %% "auth-client"                % "2.27.0-play-25",
     "uk.gov.hmrc"           %% "play-health"                % "3.14.0-play-25",
     "uk.gov.hmrc"           %% "play-config"                % "7.5.0",
