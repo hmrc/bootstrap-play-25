@@ -44,6 +44,18 @@ class JsonErrorHandler @Inject()(val configuration: Configuration, auditConnecto
     with HttpAuditEvent
     with AppName {
 
+  /**
+   * `upstreamWarnStatuses` is used to determine the log level for exceptions
+   * relating to a HttpResponse. You can set this value in your config as
+   * a list of integers representing response codes that should log at a
+   * warning level rather an error level.
+   *
+   * e.g. upstreamWarnStatuses=[400,404,502]
+   *
+   * This is used to reduce the number of noise the number of duplicated alerts
+   * for a microservice.
+   */
+  protected val upstreamWarnStatuses: Seq[Int] = configuration.getIntSeq("upstreamWarnStatuses").getOrElse(Nil).map(_.intValue())
   implicit val erFormats = Json.format[ErrorResponse]
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
@@ -67,29 +79,39 @@ class JsonErrorHandler @Inject()(val configuration: Configuration, auditConnecto
   override def onServerError(request: RequestHeader, ex: Throwable) = {
     implicit val headerCarrier = HeaderCarrierConverter.fromHeadersAndSessionAndRequest(request.headers, request = Some(request))
 
-    Logger.error(s"! Internal server error, for (${request.method}) [${request.uri}] -> ", ex)
+    val message = s"! Internal server error, for (${request.method}) [${request.uri}] -> "
 
     val code = ex match {
-      case e: NotFoundException           => "ResourceNotFound"
-      case e: AuthorisationException      => "ClientError"
-      case jsError: JsValidationException => "ServerValidationError"
-      case _                              => "ServerInternalError"
+      case _: NotFoundException       => "ResourceNotFound"
+      case _: AuthorisationException  => "ClientError"
+      case _: JsValidationException   => "ServerValidationError"
+      case _                          => "ServerInternalError"
+    }
+
+    val errorResponse = ex match {
+      case e: AuthorisationException =>
+        Logger.error(message, e)
+        ErrorResponse(401, e.getMessage)
+      case e: HttpException =>
+        logException(e, e.responseCode)
+        ErrorResponse(e.responseCode, e.getMessage)
+      case e: Exception with UpstreamErrorResponse =>
+        logException(e, e.upstreamResponseCode)
+        ErrorResponse(e.reportAs, e.getMessage)
+      case e: Throwable =>
+        Logger.error(message, e)
+        ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage)
     }
 
     auditConnector.sendEvent(
       dataEvent(code, "Unexpected error", request, Map("transactionFailureReason" -> ex.getMessage)))
-    Future.successful(resolveError(ex))
+    Future.successful(new Status(errorResponse.statusCode)(Json.toJson(errorResponse)))
   }
 
-  private def resolveError(ex: Throwable): Result = {
-    val errorResponse = ex match {
-      case e: AuthorisationException => ErrorResponse(401, e.getMessage)
-      case e: HttpException          => ErrorResponse(e.responseCode, e.getMessage)
-      case e: Upstream4xxResponse    => ErrorResponse(e.reportAs, e.getMessage)
-      case e: Upstream5xxResponse    => ErrorResponse(e.reportAs, e.getMessage)
-      case e: Throwable              => ErrorResponse(INTERNAL_SERVER_ERROR, e.getMessage)
-    }
-
-    new Status(errorResponse.statusCode)(Json.toJson(errorResponse))
+  private def logException(exception: Exception, responseCode: Int): Unit = {
+    if(upstreamWarnStatuses contains responseCode)
+      Logger.warn(exception.getMessage, exception)
+    else
+      Logger.error(exception.getMessage, exception)
   }
 }
