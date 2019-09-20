@@ -46,16 +46,17 @@ class JsonErrorHandler @Inject()(val configuration: Configuration, auditConnecto
 
   /**
    * `upstreamWarnStatuses` is used to determine the log level for exceptions
-   * relating to a HttpResponse. You can set this value in your config as
-   * a list of integers representing response codes that should log at a
-   * warning level rather an error level.
+   * relating to a HttpResponse. You can set this value in your config, with
+   * the key `bootstrap.errorHandler.warnOnly.statusCodes`, as list of
+   * integers representing response codes that should log at a warning level
+   * rather an error level.
    *
-   * e.g. upstreamWarnStatuses=[400,404,502]
+   * e.g. bootstrap.errorHandler.warnOnly.statusCodes=[400,404,502]
    *
    * This is used to reduce the number of noise the number of duplicated alerts
    * for a microservice.
    */
-  protected val upstreamWarnStatuses: Seq[Int] = configuration.getIntSeq("upstreamWarnStatuses").getOrElse(Nil).map(_.intValue())
+  protected val upstreamWarnStatuses: Seq[Int] = configuration.getIntSeq("bootstrap.errorHandler.warnOnly.statusCodes").getOrElse(Nil).map(_.intValue())
   implicit val erFormats = Json.format[ErrorResponse]
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
