@@ -22,7 +22,7 @@ import akka.stream.Materializer
 import org.joda.time.{DateTime, Duration}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.{MatchResult, Matcher}
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import play.api.{Application, Configuration}
 import play.api.http.{DefaultHttpFilters, HttpFilters}

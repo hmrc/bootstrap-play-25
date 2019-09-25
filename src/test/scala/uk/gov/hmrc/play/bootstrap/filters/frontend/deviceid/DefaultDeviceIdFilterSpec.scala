@@ -19,7 +19,7 @@ package uk.gov.hmrc.play.bootstrap.filters.frontend.deviceid
 import javax.inject.Inject
 
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import play.api.Application
 import play.api.http.{DefaultHttpFilters, HeaderNames, HttpFilters}

@@ -27,7 +27,7 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito._
 import org.scalatest.Matchers._
 import org.scalatest.concurrent.{Eventually, ScalaFutures}
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest._
 import org.scalatestplus.play._

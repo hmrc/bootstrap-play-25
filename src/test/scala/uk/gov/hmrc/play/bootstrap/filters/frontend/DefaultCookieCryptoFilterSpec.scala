@@ -22,7 +22,7 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.http.{DefaultHttpFilters, HeaderNames, HttpFilters}
 import play.api.inject.guice.GuiceApplicationBuilder

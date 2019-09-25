@@ -18,22 +18,24 @@ package uk.gov.hmrc.play.bootstrap.http
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import ch.qos.logback.classic.Level
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
 import org.scalatest.concurrent.{Eventually, ScalaFutures}
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{LoneElement, Matchers, WordSpec}
-import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
+import play.api.{Configuration, Logger}
 import uk.gov.hmrc.auth.core.BearerTokenExpired
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException, Upstream5xxResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.bootstrap.config.DummyRequestHeader
+import uk.gov.hmrc.play.test.LogCapturing
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,6 +50,7 @@ class JsonErrorHandlerSpec
     with ScalaFutures
     with MockitoSugar
     with LoneElement
+    with LogCapturing
     with Eventually
     with MaterializerSupport {
 
@@ -104,6 +107,40 @@ class JsonErrorHandlerSpec
       captor.getValue.auditType shouldBe "ServerInternalError"
     }
 
+    "log a warning for upstream code in the warning list" when {
+      class WarningSetup(upstreamWarnStatuses: Seq[Int]) extends Setup {
+        override val configuration: Configuration = Configuration(
+          "appName" -> "myApp",
+          "bootstrap.errorHandler.warnOnly.statusCodes" -> upstreamWarnStatuses
+        )
+      }
+
+      "an UpstreamErrorResponse exception occurs" in new WarningSetup(Seq(500)) {
+        withCaptureOfLoggingFrom(Logger) { logEvents =>
+          jsh.onServerError(requestHeader, Upstream5xxResponse("any application exception", 500, 502)).futureValue
+
+          eventually {
+            val event = logEvents.loneElement
+            event.getLevel   shouldBe Level.WARN
+            event.getMessage shouldBe s"any application exception"
+          }
+        }
+      }
+
+      "a HttpException occurs" in new WarningSetup(Seq(400)) {
+        withCaptureOfLoggingFrom(Logger) { logEvents =>
+          jsh.onServerError(requestHeader, new BadRequestException("any application exception")).futureValue
+
+          eventually {
+            val event = logEvents.loneElement
+            event.getLevel   shouldBe Level.WARN
+            event.getMessage shouldBe s"any application exception"
+          }
+        }
+      }
+    }
+
+
     sealed trait Setup {
       val method        = "some-method"
       val uri           = "some-uri"
@@ -114,7 +151,7 @@ class JsonErrorHandlerSpec
         .thenReturn(Future.successful(Success))
 
       val configuration = Configuration("appName" -> "myApp")
-      val jsh           = new JsonErrorHandler(configuration, auditConnector)
+      lazy val jsh           = new JsonErrorHandler(configuration, auditConnector)
     }
   }
 }
