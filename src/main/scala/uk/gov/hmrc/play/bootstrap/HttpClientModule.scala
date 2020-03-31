@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,14 @@ package uk.gov.hmrc.play.bootstrap
 
 import play.api.inject.{Binding, Module}
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.http.CoreGet
 import uk.gov.hmrc.play.bootstrap.http.{DefaultHttpClient, HttpClient}
 
 class HttpClientModule extends Module {
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = Seq(
-    bind[HttpClient].to[DefaultHttpClient]
+    bind[HttpClient].to[DefaultHttpClient],
+    // binding additional interfaces so that libraries that depend on http-verbs can be easily injected
+    bind[CoreGet].to[DefaultHttpClient]
   )
 }

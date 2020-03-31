@@ -19,6 +19,7 @@ object AppDependencies {
     "uk.gov.hmrc"           %% "play-health"                % "3.14.0-play-25",
     "uk.gov.hmrc"           %% "play-config"                % "7.5.0",
     "uk.gov.hmrc"           %% "logback-json-logger"        % "4.3.0",
+    "uk.gov.hmrc"           %% "cookie-banner-play-25"      % "0.6.0",
     "com.typesafe.play"     %% "play"                       % PlayVersion.current,
     "io.dropwizard.metrics" % "metrics-graphite"            % "3.2.5",
     "de.threedimensions"    %% "metrics-play"               % "2.5.13",
