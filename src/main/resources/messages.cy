@@ -1,0 +1,9 @@
+global.error.badRequest400.title=Heb ddod o hyd i’r dudalen
+global.error.badRequest400.heading=Heb ddod o hyd i’r dudalen
+global.error.badRequest400.message=Os gwnaethoch deipio’r cyfeiriad gwe, dylech wirio ei fod yn gywir. Os gwnaethoch bastio’r cyfeiriad gwe, dylech wirio’ch bod wedi copïo’r cyfeiriad yn llawn.
+global.error.pageNotFound404.title=Heb ddod o hyd i’r dudalen
+global.error.pageNotFound404.heading=Heb ddod o hyd i’r dudalen
+global.error.pageNotFound404.message=Os gwnaethoch deipio’r cyfeiriad gwe, dylech wirio ei fod yn gywir. Os gwnaethoch bastio’r cyfeiriad gwe, dylech wirio’ch bod wedi copïo’r cyfeiriad yn llawn.
+global.error.InternalServerError500.title=Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth
+global.error.InternalServerError500.heading=Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth
+global.error.InternalServerError500.message=Rhowch gynnig arall arni yn nes ymlaen.
